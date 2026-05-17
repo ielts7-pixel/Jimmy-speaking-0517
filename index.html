@@ -1,0 +1,1563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IELTS Speaking – Sports Programs</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #f0f2f5;
+            height: 100vh;
+            overflow: hidden;
+            color: #1a1a2e;
+        }
+
+        /* ── Layout ── */
+        .layout {
+            display: grid;
+            grid-template-columns: 22% 1fr 30%;
+            height: 100vh;
+        }
+
+        /* ── Left: Question List ── */
+        .q-list {
+            background: #fff;
+            border-right: 1px solid #e5e7eb;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .q-list-header {
+            padding: 22px 20px 14px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .topic-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #eef2ff;
+            color: #4f46e5;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 20px;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .topic-name {
+            font-size: 18px;
+            font-weight: 700;
+            color: #111827;
+            line-height: 1.3;
+        }
+
+        .part-label {
+            font-size: 12px;
+            color: #6b7280;
+            margin-top: 4px;
+            font-weight: 500;
+        }
+
+        .q-items {
+            overflow-y: auto;
+            padding: 12px;
+            flex: 1;
+        }
+
+        .q-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 12px;
+            border-radius: 10px;
+            cursor: pointer;
+            margin-bottom: 6px;
+            transition: all 0.2s;
+            border: 2px solid transparent;
+        }
+
+        .q-item:hover { background: #f5f3ff; }
+
+        .q-item.active {
+            background: #4f46e5;
+            border-color: #4f46e5;
+        }
+
+        .q-num {
+            min-width: 22px;
+            height: 22px;
+            background: #e5e7eb;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 700;
+            color: #6b7280;
+            margin-top: 1px;
+        }
+
+        .q-item.active .q-num {
+            background: rgba(255,255,255,0.25);
+            color: #fff;
+        }
+
+        .q-text {
+            font-size: 13px;
+            line-height: 1.5;
+            color: #374151;
+            font-weight: 500;
+        }
+
+        .q-item.active .q-text { color: #fff; }
+
+        /* ── Center: Main ── */
+        .main {
+            padding: 28px 24px;
+            overflow-y: auto;
+            background: #f0f2f5;
+            min-width: 0;
+        }
+
+        .current-q-card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 22px 24px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+            margin-bottom: 16px;
+        }
+
+        .q-big {
+            font-size: 19px;
+            font-weight: 700;
+            color: #111827;
+            line-height: 1.5;
+            margin-bottom: 0;
+        }
+
+        .sample-answer-card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 22px 24px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .section-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .answer-controls {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .btn-reveal {
+            font-size: 12px;
+            font-weight: 600;
+            padding: 5px 14px;
+            border-radius: 20px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-show-answer {
+            background: #4f46e5;
+            color: white;
+        }
+
+        .btn-show-answer:hover { background: #4338ca; }
+
+        .btn-reveal-blanks {
+            background: #f3f4f6;
+            color: #374151;
+            border: 1px solid #e5e7eb;
+        }
+
+        .btn-reveal-blanks:hover { background: #e5e7eb; }
+
+        .answer-hidden { display: none; }
+
+        .answer-placeholder {
+            background: #f9fafb;
+            border: 2px dashed #d1d5db;
+            border-radius: 10px;
+            padding: 24px;
+            text-align: center;
+            color: #9ca3af;
+            font-size: 14px;
+        }
+
+        .answer-placeholder p { margin-bottom: 6px; }
+        .answer-placeholder span { font-size: 12px; }
+
+        .sample-answer {
+            font-size: 14px;
+            line-height: 1.7;
+            color: #374151;
+        }
+
+        .sample-answer mark {
+            background: #fef9c3;
+            border-radius: 3px;
+            padding: 0 2px;
+            color: #92400e;
+            font-weight: 600;
+        }
+
+        .sample-answer .colloc {
+            background: #dcfce7;
+            border-radius: 3px;
+            padding: 0 2px;
+            color: #166534;
+            font-weight: 600;
+        }
+
+        /* ── Blank / Fill-in ── */
+        .blank {
+            display: inline;
+            border-bottom: 2px solid #4f46e5;
+            cursor: pointer;
+            border-radius: 3px;
+            padding: 1px 8px;
+            background: #eef2ff;
+            color: transparent;
+            user-select: none;
+            transition: background 0.2s, color 0.2s;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .blank::after {
+            content: '?';
+            color: #818cf8;
+            font-weight: 700;
+            font-size: 12px;
+        }
+
+        .blank.revealed {
+            background: #fef9c3;
+            color: #92400e;
+            border-bottom-color: #f59e0b;
+        }
+
+        .blank.revealed::after { display: none; }
+
+        .blank.colloc-blank {
+            background: #dcfce7;
+            border-bottom-color: #22c55e;
+        }
+
+        .blank.colloc-blank::after { color: #22c55e; }
+
+        .blank.colloc-blank.revealed {
+            background: #dcfce7;
+            color: #166534;
+            border-bottom-color: #22c55e;
+        }
+
+        .legend {
+            display: flex;
+            gap: 14px;
+            margin-top: 16px;
+            padding-top: 14px;
+            border-top: 1px solid #f3f4f6;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 11px;
+            color: #6b7280;
+        }
+
+        .legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 2px;
+        }
+
+        /* ── Right: Dictionary Panel ── */
+        .dict-panel {
+            background: #fff;
+            border-left: 1px solid #e5e7eb;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .dict-header {
+            padding: 20px 22px 0;
+        }
+
+        .dict-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 14px;
+        }
+
+        .tab-row {
+            display: flex;
+            border-bottom: 2px solid #f3f4f6;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 10px 0;
+            text-align: center;
+            font-size: 12px;
+            font-weight: 600;
+            color: #9ca3af;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
+            transition: all 0.2s;
+        }
+
+        .tab.active {
+            color: #4f46e5;
+            border-bottom-color: #4f46e5;
+        }
+
+        .tab-content { display: none; flex: 1; overflow-y: auto; padding: 18px 20px; }
+        .tab-content.active { display: block; }
+
+        /* Synonym tab */
+        .syn-note {
+            background: #fefce8;
+            border-left: 3px solid #facc15;
+            border-radius: 6px;
+            padding: 10px 12px;
+            font-size: 12px;
+            color: #713f12;
+            margin-bottom: 18px;
+            line-height: 1.5;
+        }
+
+        .syn-group { margin-bottom: 22px; }
+
+        .syn-keyword {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .syn-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #ef4444;
+            flex-shrink: 0;
+        }
+
+        .syn-word {
+            font-size: 14px;
+            font-weight: 700;
+            color: #dc2626;
+        }
+
+        .syn-word-zh {
+            font-size: 11px;
+            color: #9ca3af;
+        }
+
+        .syn-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            padding-left: 16px;
+            margin-bottom: 10px;
+        }
+
+        .syn-tag {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            color: #15803d;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 6px;
+        }
+
+        .syn-example {
+            margin-left: 16px;
+            background: #f9fafb;
+            border-radius: 6px;
+            padding: 10px 12px;
+            font-size: 12px;
+            line-height: 1.6;
+            color: #374151;
+        }
+
+        .syn-example em { color: #6b7280; display: block; margin-top: 4px; font-style: normal; }
+
+        /* Phrases tab */
+        .phrase-card {
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 14px;
+        }
+
+        .phrase-top {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 6px;
+        }
+
+        .phrase-word {
+            font-size: 15px;
+            font-weight: 700;
+            color: #111827;
+        }
+
+        .phrase-pos {
+            font-size: 10px;
+            background: #f3f4f6;
+            color: #6b7280;
+            padding: 2px 7px;
+            border-radius: 4px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .phrase-zh {
+            font-size: 12px;
+            color: #4f46e5;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .phrase-def {
+            font-size: 12px;
+            color: #374151;
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        .phrase-usage {
+            background: #f0fdf4;
+            border-left: 3px solid #22c55e;
+            padding: 8px 10px;
+            border-radius: 4px;
+            font-size: 11px;
+            color: #15803d;
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        .phrase-ex-label {
+            font-size: 10px;
+            font-weight: 700;
+            color: #9ca3af;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+
+        .phrase-ex {
+            font-size: 12px;
+            color: #1f2937;
+            font-style: italic;
+            margin-bottom: 4px;
+            line-height: 1.5;
+        }
+
+        .phrase-ex-zh {
+            font-size: 11px;
+            color: #6b7280;
+            line-height: 1.5;
+            margin-bottom: 10px;
+        }
+
+        .phrase-actions {
+            display: flex;
+            gap: 6px;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 6px;
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            font-size: 11px;
+            cursor: pointer;
+            color: #6b7280;
+            font-weight: 500;
+            transition: all 0.15s;
+        }
+
+        .action-btn:hover { background: #f3f4f6; color: #374151; }
+
+        /* scrollbar */
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
+    </style>
+</head>
+<body>
+<div class="layout">
+
+    <!-- Left -->
+    <div class="q-list">
+        <div class="q-list-header">
+            <div class="topic-chip">📚 All Topics</div>
+            <div class="topic-name" id="topicName">IELTS Speaking</div>
+            <div class="part-label" id="partLabel">16 questions</div>
+        </div>
+        <div class="q-items" id="qList"></div>
+    </div>
+
+    <!-- Center -->
+    <div class="main">
+        <div class="current-q-card">
+            <div class="q-big" id="currentQ"></div>
+        </div>
+        <div class="sample-answer-card">
+            <div class="section-header">
+                <div class="section-title">Sample Answer</div>
+                <div class="answer-controls">
+                    <button class="btn-reveal btn-reveal-blanks" id="btnRevealBlanks" onclick="revealAllBlanks()" style="display:none">👁 Reveal All</button>
+                    <button class="btn-reveal btn-show-answer" id="btnShowAnswer" onclick="showAnswer()">Show Answer</button>
+                </div>
+            </div>
+            <!-- Placeholder shown before answer is revealed -->
+            <div class="answer-placeholder" id="answerPlaceholder">
+                <p>✏️ Think about how <em>you</em> would answer first.</p>
+                <span>Click "Show Answer" when ready.</span>
+            </div>
+            <!-- Answer with blanks (shown after clicking Show Answer) -->
+            <div class="answer-hidden" id="answerArea">
+                <div class="sample-answer" id="sampleAnswer"></div>
+                <div class="legend">
+                    <div class="legend-item"><span class="legend-dot" style="background:#fef9c3;border:1px solid #fcd34d"></span> High-score phrase — click to reveal</div>
+                    <div class="legend-item"><span class="legend-dot" style="background:#dcfce7;border:1px solid #86efac"></span> Collocation — click to reveal</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right -->
+    <div class="dict-panel">
+        <div class="dict-header">
+            <div class="dict-title">📖 Vocabulary Bank</div>
+            <div class="tab-row">
+                <div class="tab active" onclick="switchTab('synonyms')">Synonym Swap</div>
+                <div class="tab" onclick="switchTab('phrases')">Common Phrases</div>
+            </div>
+        </div>
+        <div id="synonyms" class="tab-content active"></div>
+        <div id="phrases" class="tab-content"></div>
+    </div>
+
+</div>
+
+<script>
+const data = [
+    {
+        id: 'p1-old-1',
+        q: "Have you ever seen old buildings in the city?",
+        sample: `Yes, I have. My city has quite a lot of <mark>historic buildings</mark> dating back centuries. The architecture is truly <mark>breathtaking</mark> — there's something about the intricate <span class="colloc">craftsmanship</span> that you simply don't see in modern construction. I often <span class="colloc">walk past</span> these buildings and think about all the <mark>historical significance</mark> they hold. It's like stepping back in time.`,
+        synonyms: [
+            {
+                word: "old buildings", zh: "古老的建築",
+                tags: ["historic structures", "ancient architecture", "heritage buildings", "period properties"],
+                example: "The historic structures in our town square are over 200 years old.",
+                exampleZh: "我們城鎮廣場的古老建築已有200多年歷史。"
+            },
+            {
+                word: "seen", zh: "看過",
+                tags: ["observed", "encountered", "noticed", "come across", "spotted"],
+                example: "I've come across some stunning old architecture while travelling.",
+                exampleZh: "我在旅遊中遇到過一些驚人的古老建築。"
+            },
+            {
+                word: "city", zh: "城市",
+                tags: ["town", "metropolis", "urban area", "downtown"],
+                example: "The downtown area has the most impressive historic buildings.",
+                exampleZh: "市中心有最令人印象深刻的古老建築。"
+            }
+        ],
+        phrases: [
+            {
+                word: "historic buildings",
+                pos: "noun phrase",
+                zh: "歷史建築",
+                def: "Buildings of significant historical importance or age.",
+                usage: "比 'old buildings' 更正式，暗示文化和歷史價值。",
+                ex: "The historic buildings in this district are protected by law.",
+                exZh: "這個地區的歷史建築受法律保護。"
+            },
+            {
+                word: "breathtaking",
+                pos: "adjective",
+                zh: "令人驚嘆的",
+                def: "Extremely beautiful or impressive.",
+                usage: "描述建築美感的強有力詞匯，比 'beautiful' 更有力。",
+                ex: "The architecture of the cathedral is absolutely breathtaking.",
+                exZh: "大教堂的建築絕對令人驚嘆。"
+            },
+            {
+                word: "walk past",
+                pos: "phrasal verb",
+                zh: "經過（走過）",
+                def: "To pass by a place while walking.",
+                usage: "日常口語用法，顯示與建築的日常互動。",
+                ex: "I walk past those beautiful old buildings on my way to work.",
+                exZh: "我上班時會經過那些美麗的舊建築。"
+            }
+        ]
+    },
+    {
+        id: 'p1-old-2',
+        q: "Do you think we should preserve old buildings in cities?",
+        sample: `Absolutely. I think it's crucial to <mark>preserve our heritage</mark>. These buildings are not just structures — they're links to our past, and they tell the story of how our cities evolved. Plus, I'd argue that <mark>well-maintained historic architecture</mark> actually <span class="colloc">adds character</span> to a city and <span class="colloc">attracts tourists</span>. That said, I understand the tension between <mark>preservation and progress</mark>. Some old buildings might need to be carefully demolished if they're beyond repair, but the majority should definitely be saved.`,
+        synonyms: [
+            {
+                word: "preserve", zh: "保護/保存",
+                tags: ["maintain", "protect", "conserve", "keep intact", "safeguard"],
+                example: "We should conserve these structures for future generations.",
+                exampleZh: "我們應該為後代保護這些建築。"
+            },
+            {
+                word: "buildings", zh: "建築",
+                tags: ["structures", "architecture", "edifices", "monuments"],
+                example: "These architectural monuments represent our cultural identity.",
+                exampleZh: "這些建築紀念碑代表我們的文化認同。"
+            },
+            {
+                word: "cities", zh: "城市",
+                tags: ["urban areas", "metropolises", "city centres", "downtowns"],
+                example: "The urban landscape would be dull without historic architecture.",
+                exampleZh: "沒有歷史建築，城市景觀會很乏味。"
+            }
+        ],
+        phrases: [
+            {
+                word: "preserve our heritage",
+                pos: "verb phrase",
+                zh: "保護我們的遺產/文化遺產",
+                def: "To protect and maintain historical and cultural treasures.",
+                usage: "正式、高尚的表達，展示對文化保護的理解。",
+                ex: "We must preserve our heritage for future generations.",
+                exZh: "我們必須為後代保護文化遺產。"
+            },
+            {
+                word: "add character",
+                pos: "verb phrase",
+                zh: "增添魅力/特色",
+                def: "To give a place a distinctive and appealing quality.",
+                usage: "描述建築對城市整體形象的貢獻。",
+                ex: "The old architecture really adds character to the neighbourhood.",
+                exZh: "古老的建築確實為這個街區增添了魅力。"
+            },
+            {
+                word: "attract tourists",
+                pos: "verb phrase",
+                zh: "吸引遊客",
+                def: "To draw visitors to a place.",
+                usage: "論證保護建築的經濟價值。",
+                ex: "Historic architecture attracts thousands of tourists annually.",
+                exZh: "歷史建築每年吸引數千名遊客。"
+            }
+        ]
+    },
+    {
+        id: 'p1-old-3',
+        q: "Do you prefer living in an old building or a modern house?",
+        sample: `That's an interesting question — I'd say it depends on the circumstances. <mark>Old buildings have their charm</mark>: the <span class="colloc">high ceilings</span>, original <mark>ornate details</mark>, and the sense of history are really appealing. However, modern houses are more <span class="colloc">energy-efficient</span>, better insulated, and the <mark>layout is usually more practical</mark> for contemporary living. If I had to choose, I think I'd lean towards a well-renovated historic building that blends the best of both worlds — the aesthetic appeal of the past with modern amenities.`,
+        synonyms: [
+            {
+                word: "prefer", zh: "更喜歡",
+                tags: ["would rather", "like better", "favour", "choose over"],
+                example: "I would rather live in a well-designed modern space.",
+                exampleZh: "我寧願住在設計精良的現代空間裡。"
+            },
+            {
+                word: "old building", zh: "舊建築",
+                tags: ["historic structure", "heritage property", "period building", "vintage building"],
+                example: "This heritage property has been in the family for generations.",
+                exampleZh: "這棟產權建築已經在家族中傳了好幾代。"
+            },
+            {
+                word: "modern house", zh: "現代房子",
+                tags: ["contemporary home", "new construction", "modern dwelling", "contemporary property"],
+                example: "Contemporary homes often feature open-plan living spaces.",
+                exampleZh: "現代房屋通常採用開放式生活空間。"
+            }
+        ],
+        phrases: [
+            {
+                word: "have their charm",
+                pos: "verb phrase",
+                zh: "有其吸引力/魅力",
+                def: "To possess a particular appeal or attractiveness.",
+                usage: "承認兩種選擇都有優點，顯示平衡的觀點。",
+                ex: "Despite the maintenance issues, old homes have their charm.",
+                exZh: "儘管有維護問題，舊房子仍有其魅力。"
+            },
+            {
+                word: "high ceilings",
+                pos: "noun phrase",
+                zh: "高天花板",
+                def: "Rooms with ceilings at a greater distance from the floor.",
+                usage: "描述舊建築的典型特徵。",
+                ex: "The high ceilings in the mansion created a grand atmosphere.",
+                exZh: "宅邸的高天花板營造出宏偉的氛圍。"
+            },
+            {
+                word: "energy-efficient",
+                pos: "adjective",
+                zh: "節能的",
+                def: "Designed to use minimal energy while maintaining comfort.",
+                usage: "論證現代房屋的優勢。",
+                ex: "Modern houses are far more energy-efficient than older properties.",
+                exZh: "現代房屋比舊房子節能得多。"
+            }
+        ]
+    },
+    {
+        id: 'p1-old-4',
+        q: "Are there any old buildings you want to see in the future? Why?",
+        sample: `Definitely! I'm <mark>fascinated by European architecture</mark>, and I'd love to visit the <mark>medieval castles</mark> in Scotland and France. I'm also keen to see <span class="colloc">historic landmarks</span> like the Tower of London, which has so much cultural significance. I think these buildings offer a <mark>tangible connection</mark> to history — they're not just pictures in a textbook, they're real structures that have <span class="colloc">stood the test of time</span>. Being there in person would give me a much deeper understanding and <mark>appreciation</mark> of different eras.`,
+        synonyms: [
+            {
+                word: "old buildings", zh: "舊建築",
+                tags: ["historic structures", "ancient monuments", "heritage sites", "period architecture"],
+                example: "I want to visit ancient monuments across Europe.",
+                exampleZh: "我想參觀歐洲各地的古代紀念碑。"
+            },
+            {
+                word: "want to see", zh: "想看",
+                tags: ["keen to visit", "looking forward to", "dying to see", "hoping to explore"],
+                example: "I'm keen to explore the ancient temples of Asia.",
+                exampleZh: "我很想探索亞洲的古老寺廟。"
+            },
+            {
+                word: "future", zh: "未來",
+                tags: ["one day", "eventually", "down the line", "in the years to come"],
+                example: "Eventually, I hope to travel and experience these historic sites.",
+                exampleZh: "將來某天，我希望去旅遊並體驗這些歷史遺址。"
+            }
+        ],
+        phrases: [
+            {
+                word: "fascinated by",
+                pos: "adjective phrase",
+                zh: "被...吸引/著迷",
+                def: "Very interested in or attracted to something.",
+                usage: "表達對建築的強烈興趣，比 'like' 更深層。",
+                ex: "I'm fascinated by Gothic architecture and its intricate details.",
+                exZh: "我對哥德式建築及其複雜細節著迷。"
+            },
+            {
+                word: "medieval castles",
+                pos: "noun phrase",
+                zh: "中世紀城堡",
+                def: "Fortified buildings from the Middle Ages.",
+                usage: "具體的建築類型，展示知識和興趣深度。",
+                ex: "The medieval castles in the highlands are absolutely stunning.",
+                exZh: "高地上的中世紀城堡絕對令人驚嘆。"
+            },
+            {
+                word: "stood the test of time",
+                pos: "phrasal verb",
+                zh: "經受住時間考驗",
+                def: "To remain valuable, relevant, or popular over a long period.",
+                usage: "表達建築的永恆價值和重要性。",
+                ex: "These architectural masterpieces have stood the test of time.",
+                exZh: "這些建築傑作經受住了時間的考驗。"
+            }
+        ]
+    },
+    {
+        id: 'p3-traffic-1',
+        q: "How can we solve the traffic jam problem?",
+        sample: `There are quite a few approaches we could take. The most effective would probably be <mark>developing public transportation</mark> systems — if buses and metros are reliable and affordable, more people will <span class="colloc">opt for</span> them instead of driving. Another strategy is <mark>implementing congestion pricing</mark> in city centers, which <span class="colloc">discourages commuters</span> from driving during peak hours. Some cities have also had success with <mark>urban planning improvements</mark>, like creating dedicated bike lanes and pedestrian zones. In my view, the most practical solution is a <mark>combination of these approaches</mark> rather than relying on just one.`,
+        synonyms: [
+            {
+                word: "solve", zh: "解決",
+                tags: ["tackle", "address", "resolve", "fix", "mitigate"],
+                example: "We need to tackle this issue from multiple angles.",
+                exampleZh: "我們需要從多個角度解決這個問題。"
+            },
+            {
+                word: "traffic jam", zh: "交通堵塞",
+                tags: ["congestion", "gridlock", "traffic congestion", "road congestion"],
+                example: "Road congestion is getting worse every year.",
+                exampleZh: "道路堵塞每年都在惡化。"
+            },
+            {
+                word: "problem", zh: "問題",
+                tags: ["issue", "challenge", "concern", "dilemma"],
+                example: "Urban congestion is one of the biggest challenges facing cities today.",
+                exampleZh: "城市堵塞是當今城市面臨的最大挑戰之一。"
+            }
+        ],
+        phrases: [
+            {
+                word: "develop public transportation",
+                pos: "verb phrase",
+                zh: "發展公共交通",
+                def: "To improve and expand systems like buses, trains, and metros.",
+                usage: "表述解決交通問題的關鍵方案。",
+                ex: "Developing efficient public transportation can significantly reduce traffic.",
+                exZh: "發展高效的公共交通能顯著減少交通擁堵。"
+            },
+            {
+                word: "opt for",
+                pos: "phrasal verb",
+                zh: "選擇",
+                def: "To choose something as a preference.",
+                usage: "比 'choose' 更正式，常用於討論決策。",
+                ex: "More people would opt for public transport if it were more convenient.",
+                exZh: "如果公共交通更方便，更多人會選擇它。"
+            },
+            {
+                word: "congestion pricing",
+                pos: "noun phrase",
+                zh: "擁堵收費/道路收費",
+                def: "Charging drivers to enter congested city areas during peak times.",
+                usage: "專業的交通政策術語，展示對議題的深入理解。",
+                ex: "Congestion pricing has proved effective in London and Singapore.",
+                exZh: "擁堵收費在倫敦和新加坡已被證明有效。"
+            }
+        ]
+    },
+    {
+        id: 'p3-traffic-2',
+        q: "Do you think developing public transport can solve traffic jam problems?",
+        sample: `I think it can be a <mark>major part of the solution</mark>, but not a complete fix on its own. Public transport is certainly important because it can <span class="colloc">take vehicles off the road</span>, reduce emissions, and improve mobility for those who can't drive. However, the success of public transport depends on several factors: the quality of the service, affordability, frequency, and <mark>accessibility</mark>. If a metro system is slow, overcrowded, or doesn't cover enough areas, people will <span class="colloc">stick with their cars</span> anyway. So while expanding public transport is essential, we also need <mark>complementary measures</mark> like better urban planning and perhaps even <span class="colloc">stricter regulations</span> on private vehicles.`,
+        synonyms: [
+            {
+                word: "developing public transport", zh: "發展公共交通",
+                tags: ["improving transit systems", "expanding metro services", "upgrading bus networks"],
+                example: "Expanding transit systems reduces car dependency significantly.",
+                exampleZh: "擴大運輸系統大大減少了對汽車的依賴。"
+            },
+            {
+                word: "solve", zh: "解決",
+                tags: ["address", "alleviate", "mitigate", "resolve", "ease"],
+                example: "We can alleviate traffic congestion through better planning.",
+                exampleZh: "通過更好的規劃可以緩解交通堵塞。"
+            },
+            {
+                word: "traffic jam problems", zh: "交通堵塞問題",
+                tags: ["congestion issues", "traffic congestion", "gridlock problems"],
+                example: "Urban congestion issues require multifaceted solutions.",
+                exampleZh: "城市堵塞問題需要多方面的解決方案。"
+            }
+        ],
+        phrases: [
+            {
+                word: "major part of the solution",
+                pos: "noun phrase",
+                zh: "解決方案的主要部分",
+                def: "An important component that contributes significantly to resolving an issue.",
+                usage: "平衡地承認公共交通的重要性，同時為更多分析留出空間。",
+                ex: "Public transport is a major part of the solution to congestion.",
+                exZh: "公共交通是解決堵塞的主要部分。"
+            },
+            {
+                word: "take vehicles off the road",
+                pos: "verb phrase",
+                zh: "減少道路上的車輛",
+                def: "To reduce the number of cars on the streets.",
+                usage: "具體描述公共交通的效果。",
+                ex: "If more people use public transport, we can take vehicles off the road.",
+                exZh: "如果更多人使用公共交通，我們可以減少道路上的車輛。"
+            },
+            {
+                word: "stick with their cars",
+                pos: "phrasal verb",
+                zh: "堅持使用汽車",
+                def: "To continue using cars instead of switching to alternatives.",
+                usage: "日常表達，說明人們的行為模式。",
+                ex: "Unless public transit improves, people will stick with their cars.",
+                exZh: "除非公共交通改善，否則人們會繼續使用汽車。"
+            }
+        ]
+    },
+    {
+        id: 'p3-traffic-3',
+        q: "Do you think the high ways will help reduce traffic jams?",
+        sample: `That's a complex question. Highways can certainly <mark>facilitate faster movement</mark> of traffic, and in the short term, they might ease congestion on existing roads. However, there's a concept called <mark>"induced demand"</mark> — essentially, when you add more road capacity, <span class="colloc">it tends to attract more drivers</span>. So while highways might work initially, they often just shift the problem to different areas. Long-term solutions really require addressing the root cause, which is excessive car dependency. I'd argue that <span class="colloc">relying solely on</span> highway expansion is a <mark>short-sighted approach</mark>. We need to <mark>discourage car usage</mark> through public transport investment and urban design, not just build more roads.`,
+        synonyms: [
+            {
+                word: "highways", zh: "高速公路",
+                tags: ["motorways", "major roads", "expressways", "interstate roads"],
+                example: "Building more motorways often creates more congestion long-term.",
+                exampleZh: "修建更多高速公路往往會在長期內造成更多堵塞。"
+            },
+            {
+                word: "reduce", zh: "減少",
+                tags: ["decrease", "lessen", "diminish", "alleviate", "ease"],
+                example: "We need to lessen our dependence on personal vehicles.",
+                exampleZh: "我們需要減少對個人車輛的依賴。"
+            },
+            {
+                word: "traffic jams", zh: "交通堵塞",
+                tags: ["congestion", "gridlock", "bottlenecks", "traffic congestion"],
+                example: "Bottlenecks on major roads cause significant delays.",
+                exampleZh: "主要道路上的瓶頸造成重大延誤。"
+            }
+        ],
+        phrases: [
+            {
+                word: "facilitate faster movement",
+                pos: "verb phrase",
+                zh: "促進更快的流動",
+                def: "To enable or make it easier for traffic to move more quickly.",
+                usage: "正式承認高速公路的潛在益處。",
+                ex: "Better infrastructure can facilitate faster movement of goods and people.",
+                exZh: "更好的基礎設施能促進商品和人員的更快流動。"
+            },
+            {
+                word: "induced demand",
+                pos: "noun phrase",
+                zh: "誘導需求",
+                def: "A phenomenon where new road capacity attracts more drivers.",
+                usage: "經濟學/城市規劃的專業術語，展示深度分析能力。",
+                ex: "The induced demand effect means more highways create more traffic.",
+                exZh: "誘導需求效應意味著更多高速公路會產生更多交通。"
+            },
+            {
+                word: "short-sighted approach",
+                pos: "noun phrase",
+                zh: "短視的方法",
+                def: "A strategy that only considers immediate benefits without thinking of long-term consequences.",
+                usage: "批判單純修建高速公路的策略。",
+                ex: "Expanding roads without limiting car usage is a short-sighted approach.",
+                exZh: "在不限制汽車使用的情況下擴大道路是短視的方法。"
+            }
+        ]
+    },
+    {
+        id: 'p3-traffic-4',
+        q: "What are good ways to manage traffic?",
+        sample: `There are several strategies cities can implement. First, <mark>improving public transportation</mark> is crucial — buses, metros, and trains should be fast, reliable, and affordable. Second, <span class="colloc">smart traffic management</span> systems using AI and real-time data can optimize traffic flow and <span class="colloc">reduce congestion</span>. Third, <mark>promoting cycling and walking</mark> through good infrastructure — protected bike lanes, pedestrian zones — encourages people to <span class="colloc">leave their cars at home</span>. Fourth, <mark>urban planning</mark> that mixes residential, commercial, and office spaces reduces the need for long commutes. Finally, <mark>road pricing or congestion charges</mark> make driving during peak hours more expensive, <span class="colloc">discouraging unnecessary trips</span>. A comprehensive approach combining these measures is most effective.`,
+        synonyms: [
+            {
+                word: "manage", zh: "管理",
+                tags: ["handle", "regulate", "control", "administer", "oversee"],
+                example: "Cities need better systems to regulate traffic flow.",
+                exampleZh: "城市需要更好的系統來管制交通流量。"
+            },
+            {
+                word: "traffic", zh: "交通",
+                tags: ["vehicular movement", "transportation", "congestion", "flow"],
+                example: "We need to improve the flow of vehicles in urban areas.",
+                exampleZh: "我們需要改進城市地區車輛的流動。"
+            },
+            {
+                word: "good ways", zh: "好的方法",
+                tags: ["effective strategies", "practical solutions", "successful approaches"],
+                example: "There are many successful approaches to urban mobility.",
+                exampleZh: "有很多成功的城市流動方法。"
+            }
+        ],
+        phrases: [
+            {
+                word: "smart traffic management",
+                pos: "noun phrase",
+                zh: "智能交通管理",
+                def: "Using technology and data to optimize traffic flow.",
+                usage: "現代交通管理的專業術語。",
+                ex: "Smart traffic management systems can reduce congestion by 20%.",
+                exZh: "智能交通管理系統可以減少20%的堵塞。"
+            },
+            {
+                word: "reduce congestion",
+                pos: "verb phrase",
+                zh: "減少堵塞",
+                def: "To lower the amount of traffic and make movement easier.",
+                usage: "常用於討論交通改善措施。",
+                ex: "Public transport investment can significantly reduce congestion.",
+                exZh: "公共交通投資能顯著減少堵塞。"
+            },
+            {
+                word: "leave their cars at home",
+                pos: "verb phrase",
+                zh: "把車留在家裡",
+                def: "To choose not to drive and use alternative transport instead.",
+                usage: "說明交通政策目標的日常表達方式。",
+                ex: "Good bike lanes encourage people to leave their cars at home.",
+                exZh: "良好的自行車道鼓勵人們把車留在家裡。"
+            }
+        ]
+    },
+    {
+        id: 'p3-traffic-5',
+        q: "Do you like to use public transport?",
+        sample: `Yes, generally speaking, I prefer public transport when it's available. It's <mark>more economical</mark> than driving — you save on fuel, parking, and car maintenance. It's also <mark>environmentally friendly</mark>, which appeals to me. However, I'll be honest — my experience depends heavily on the quality of the service. When public transport is <span class="colloc">reliable and frequent</span>, it's wonderful. You can read, relax, or work during your commute. But when buses are <span class="colloc">delayed or overcrowded</span>, it becomes frustrating. The ideal would be a system where <span class="colloc">waiting times are minimal</span> and the infrastructure is <mark>well-maintained</mark>.`,
+        synonyms: [
+            {
+                word: "like to use", zh: "喜歡使用",
+                tags: ["prefer", "enjoy using", "be keen on", "favour"],
+                example: "I prefer travelling by bus when the service is good.",
+                exampleZh: "當服務良好時，我更喜歡乘坐公交車。"
+            },
+            {
+                word: "public transport", zh: "公共交通",
+                tags: ["public transit", "public transportation", "mass transit", "public services"],
+                example: "Mass transit systems reduce urban traffic significantly.",
+                exampleZh: "大眾運輸系統大大減少了城市交通。"
+            },
+            {
+                word: "use", zh: "使用",
+                tags: ["utilise", "take", "travel by", "commute via"],
+                example: "I commute via public transportation every day.",
+                exampleZh: "我每天通過公共交通通勤。"
+            }
+        ],
+        phrases: [
+            {
+                word: "more economical",
+                pos: "adjective phrase",
+                zh: "更經濟/省錢",
+                def: "More cost-effective and requiring less money to use.",
+                usage: "論證使用公共交通的財務優勢。",
+                ex: "Public transport is far more economical than owning a car.",
+                exZh: "公共交通比擁有汽車經濟得多。"
+            },
+            {
+                word: "environmentally friendly",
+                pos: "adjective phrase",
+                zh: "環境友善的",
+                def: "Not harmful to the environment.",
+                usage: "論證使用公共交通的環保優勢。",
+                ex: "Using public transit is environmentally friendly and reduces emissions.",
+                exZh: "使用公共交通對環境友善，並減少排放。"
+            },
+            {
+                word: "reliable and frequent",
+                pos: "adjective phrase",
+                zh: "可靠和頻繁",
+                def: "Dependable and running at regular short intervals.",
+                usage: "描述高質量公共交通系統的特徵。",
+                ex: "Reliable and frequent buses make commuting much easier.",
+                exZh: "可靠且頻繁的公交車使通勤變得容易得多。"
+            }
+        ]
+    },
+    {
+        id: 'p3-traffic-6',
+        q: "Would you rather be in a car or a bus in a traffic jam?",
+        sample: `That's a tough question — both have drawbacks! In a personal car, you have <mark>more control</mark> and <span class="colloc">privacy</span>, and you can at least listen to music or podcasts to pass the time. But you're also stuck behind the wheel, which is exhausting. In a bus, you're <mark>not responsible for driving</mark>, so you can relax, read, or work. The <span class="colloc">crowded conditions</span> and lack of personal space are frustrating though. Honestly, I'd probably choose the bus because <span class="colloc">at least you're not actively sitting in traffic</span> — your time is more your own. Plus, if there's an accident ahead, you're not the one managing it.`,
+        synonyms: [
+            {
+                word: "rather", zh: "寧願",
+                tags: ["prefer", "would sooner", "would choose", "would pick"],
+                example: "I would choose to take the train rather than drive.",
+                exampleZh: "我寧願乘火車也不開車。"
+            },
+            {
+                word: "car", zh: "汽車",
+                tags: ["vehicle", "automobile", "motor vehicle", "personal transport"],
+                example: "Many people prefer personal vehicles for commuting.",
+                exampleZh: "許多人更喜歡用個人車輛通勤。"
+            },
+            {
+                word: "bus", zh: "公交車",
+                tags: ["public bus", "coach", "transit bus", "minibus"],
+                example: "Taking the coach is cheaper than driving a car.",
+                exampleZh: "乘坐公交車比開車便宜。"
+            }
+        ],
+        phrases: [
+            {
+                word: "more control",
+                pos: "noun phrase",
+                zh: "更多的控制權",
+                def: "Greater ability to manage and direct something.",
+                usage: "論證開車的優勢。",
+                ex: "Driving gives you more control over your route and timing.",
+                exZh: "開車讓你對路線和時間有更多控制權。"
+            },
+            {
+                word: "not responsible for driving",
+                pos: "verb phrase",
+                zh: "不負責駕駛",
+                def: "Not bearing the duty or stress of controlling the vehicle.",
+                usage: "論證乘坐公交車的好處。",
+                ex: "When you take the bus, you're not responsible for driving.",
+                exZh: "當你乘坐公交車時，你不負責駕駛。"
+            },
+            {
+                word: "crowded conditions",
+                pos: "noun phrase",
+                zh: "擁擠的狀況",
+                def: "Situations with too many people in a limited space.",
+                usage: "描述公交車的缺點。",
+                ex: "Crowded conditions on buses during rush hour are unavoidable.",
+                exZh: "高峰時段公交車上擁擠的狀況不可避免。"
+            }
+        ]
+    },
+    {
+        id: 1,
+        q: "Do you like watching sports programs on TV?",
+        sample: `Yes, I'm <mark>a huge fan of</mark> watching sports — especially football and tennis. I <span class="colloc">tune in to</span> the Premier League every weekend without fail. There's something about the <mark>nail-biting tension</mark> of a live match that I find really <span class="colloc">addictive</span>. Even if I'm busy, I'll often <span class="colloc">record the game</span> and watch it later to avoid spoilers.`,
+        synonyms: [
+            {
+                word: "like", zh: "喜歡",
+                tags: ["be keen on", "be into", "be passionate about", "be a big fan of", "have a great interest in"],
+                example: "I'm really keen on watching football — I never miss a game.",
+                exampleZh: "我非常喜歡看足球——我從不錯過比賽。"
+            },
+            {
+                word: "watching", zh: "觀看",
+                tags: ["tune in to", "follow", "keep up with", "catch", "be glued to"],
+                example: "I always tune in to the Champions League on Tuesday nights.",
+                exampleZh: "我每個星期二晚上都收看歐冠聯賽。"
+            },
+            {
+                word: "sports programs", zh: "體育節目",
+                tags: ["sports coverage", "sporting events", "live broadcasts", "athletic competitions"],
+                example: "The sports coverage on this channel is absolutely top-notch.",
+                exampleZh: "這個頻道的體育節目報導非常出色。"
+            }
+        ],
+        phrases: [
+            {
+                word: "be a huge fan of",
+                pos: "expression",
+                zh: "是...的超級粉絲",
+                def: "To strongly admire and enthusiastically follow something or someone.",
+                usage: "比 'like' 強烈很多，表示非常喜愛，適合 IELTS 高分回答使用。",
+                ex: "I'm a huge fan of tennis — I watch every Grand Slam tournament.",
+                exZh: "我是網球的超級粉絲——每個大滿貫我都看。"
+            },
+            {
+                word: "tune in to",
+                pos: "phrasal verb",
+                zh: "收看（電視節目）",
+                def: "To switch on and watch a specific TV programme.",
+                usage: "比 'watch' 更地道，暗示定期、主動收看，搭配詞：tune in to a show / match / broadcast",
+                ex: "I tune in to the sports news every evening after work.",
+                exZh: "我每天下班後都收看體育新聞。"
+            },
+            {
+                word: "nail-biting tension",
+                pos: "noun phrase",
+                zh: "扣人心弦的緊張感",
+                def: "An extremely tense and exciting situation where the result is uncertain.",
+                usage: "出自 English Collocations in Use — 形容比賽緊張到讓人咬指甲，非常生動。",
+                ex: "The final had nail-biting tension right up to the last second.",
+                exZh: "這場決賽直到最後一秒都扣人心弦。"
+            }
+        ]
+    },
+    {
+        id: 2,
+        q: "Do you like to watch live sports games?",
+        sample: `Absolutely! Watching a <mark>live match</mark> is a completely different experience from watching a recording. The <span class="colloc">electric atmosphere</span> in the stadium is something you simply can't replicate at home. The crowd <span class="colloc">roars with excitement</span>, and you feel this shared energy with thousands of strangers. It's honestly <mark>a once-in-a-lifetime feeling</mark> the first time you attend.`,
+        synonyms: [
+            {
+                word: "live games", zh: "現場比賽",
+                tags: ["in-person matches", "real-time games", "live events", "on-the-spot competitions"],
+                example: "Watching live events is far more thrilling than replays.",
+                exampleZh: "看現場賽事比看重播刺激多了。"
+            },
+            {
+                word: "exciting", zh: "令人興奮",
+                tags: ["thrilling", "exhilarating", "electrifying", "nail-biting", "edge-of-your-seat"],
+                example: "The match was absolutely electrifying — I was on the edge of my seat.",
+                exampleZh: "這場比賽令人無比興奮——我坐立不安。"
+            },
+            {
+                word: "atmosphere", zh: "氣氛",
+                tags: ["ambiance", "buzz", "energy", "vibe", "spirit"],
+                example: "The atmosphere at the stadium was electric — everyone was on their feet.",
+                exampleZh: "體育館裡的氣氛非常熱烈——所有人都站了起來。"
+            }
+        ],
+        phrases: [
+            {
+                word: "electric atmosphere",
+                pos: "noun phrase",
+                zh: "電氣般的熱烈氣氛",
+                def: "An environment that feels full of energy and excitement.",
+                usage: "Collocations in Use 中的典型用法 — electric 常與 atmosphere 搭配，表示場面非常熱烈。",
+                ex: "The electric atmosphere at Wimbledon was unforgettable.",
+                exZh: "溫布頓的熱烈氣氛令人難忘。"
+            },
+            {
+                word: "roar with excitement",
+                pos: "verb phrase",
+                zh: "因興奮而歡呼",
+                def: "For a crowd to make a loud noise because they are very excited.",
+                usage: "生動形容現場觀眾的反應，避免使用平淡的 'shout' 或 'cheer'。",
+                ex: "The crowd roared with excitement as the home team scored.",
+                exZh: "當主隊進球時，觀眾興奮地歡呼起來。"
+            },
+            {
+                word: "a once-in-a-lifetime experience",
+                pos: "noun phrase",
+                zh: "千載難逢的體驗",
+                def: "An experience so special it may never happen again.",
+                usage: "強調某次體驗的珍貴和難得，適合描述重大體育賽事。",
+                ex: "Watching the World Cup final live was a once-in-a-lifetime experience.",
+                exZh: "現場觀看世界盃決賽是千載難逢的體驗。"
+            }
+        ]
+    },
+    {
+        id: 3,
+        q: "Who do you like to watch sports games with?",
+        sample: `I much prefer watching games <mark>in the company of</mark> close friends. We usually <span class="colloc">get together</span> at someone's house, order some food, and just have a <span class="colloc">great time</span> cheering our team on. There's nothing like <mark>the shared joy</mark> of celebrating a goal together — it amplifies the experience tenfold. That said, sometimes I do enjoy watching alone so I can <span class="colloc">fully concentrate</span> on the tactics.`,
+        synonyms: [
+            {
+                word: "watch with", zh: "一起看",
+                tags: ["enjoy with", "share with", "experience alongside", "view together with"],
+                example: "I enjoy watching games alongside my friends — the banter makes it fun.",
+                exampleZh: "我喜歡和朋友一起看比賽——玩笑話讓它更有趣。"
+            },
+            {
+                word: "friends", zh: "朋友",
+                tags: ["close mates", "buddies", "companions", "fellow fans"],
+                example: "My close mates and I never miss a big match together.",
+                exampleZh: "我和我的好友從不錯過大比賽。"
+            },
+            {
+                word: "alone", zh: "獨自",
+                tags: ["by myself", "on my own", "solo", "independently"],
+                example: "Occasionally I prefer watching on my own to really focus.",
+                exampleZh: "有時候我更喜歡獨自觀看以便集中注意力。"
+            }
+        ],
+        phrases: [
+            {
+                word: "in the company of",
+                pos: "prepositional phrase",
+                zh: "在...的陪伴下",
+                def: "Being with another person or group of people.",
+                usage: "比 'with' 更正式、更自然，可以提升你的用語層次。",
+                ex: "The game is so much better in the company of good friends.",
+                exZh: "在好朋友的陪伴下看比賽好多了。"
+            },
+            {
+                word: "get together",
+                pos: "phrasal verb",
+                zh: "聚在一起",
+                def: "To meet socially as a group.",
+                usage: "描述朋友聚會的自然說法，常用於口語。",
+                ex: "We always get together at my place for the big finals.",
+                exZh: "重大決賽時我們總是聚在我家。"
+            },
+            {
+                word: "shared joy",
+                pos: "noun phrase",
+                zh: "共享的喜悅",
+                def: "Happiness or pleasure experienced together with others.",
+                usage: "表達集體慶祝的感覺，讓回答更有情感深度。",
+                ex: "The shared joy of watching our team win is indescribable.",
+                exZh: "共同見證我們的球隊獲勝的喜悅難以言表。"
+            }
+        ]
+    },
+    {
+        id: 4,
+        q: "What kinds of games do you expect to watch in the future?",
+        sample: `I'm really <mark>looking forward to</mark> the upcoming Olympics. I'd love to watch <span class="colloc">world-class athletes</span> compete at the highest level. I've also been <mark>getting more and more into</mark> Formula 1 lately, so I hope to attend a Grand Prix in person one day. Ultimately, I'm drawn to any sport where the <span class="colloc">competitive spirit</span> and <mark>sheer determination</mark> of the athletes shine through.`,
+        synonyms: [
+            {
+                word: "expect to watch", zh: "期待觀看",
+                tags: ["look forward to", "anticipate watching", "hope to see", "plan to catch"],
+                example: "I'm really looking forward to watching the next World Cup.",
+                exampleZh: "我非常期待觀看下一屆世界盃。"
+            },
+            {
+                word: "future", zh: "未來",
+                tags: ["in the years to come", "down the line", "eventually", "one day"],
+                example: "Down the line, I'd love to attend an Olympic Games.",
+                exampleZh: "將來某天，我很想去參加奧運會。"
+            },
+            {
+                word: "kinds of games", zh: "各種比賽",
+                tags: ["types of sports", "sporting disciplines", "athletic events", "competitions"],
+                example: "I'm interested in all kinds of athletic events, from swimming to gymnastics.",
+                exampleZh: "我對各種運動項目都感興趣，從游泳到體操。"
+            }
+        ],
+        phrases: [
+            {
+                word: "world-class athletes",
+                pos: "noun phrase",
+                zh: "世界頂級運動員",
+                def: "Athletes who are among the very best in the world at their sport.",
+                usage: "形容頂尖運動員的地道說法，比 'very good players' 更有力。",
+                ex: "Watching world-class athletes compete is truly inspiring.",
+                exZh: "觀看世界頂級運動員競技真的非常鼓舞人心。"
+            },
+            {
+                word: "get more and more into",
+                pos: "phrasal verb",
+                zh: "越來越喜歡/沉迷",
+                def: "To become increasingly interested in or enthusiastic about something.",
+                usage: "表達興趣逐漸增長的動態說法，比 'like more' 更生動。",
+                ex: "I've been getting more and more into cycling over the past year.",
+                exZh: "過去一年我越來越喜歡騎自行車了。"
+            },
+            {
+                word: "sheer determination",
+                pos: "noun phrase",
+                zh: "純粹的決心",
+                def: "Absolute and unwavering will to succeed despite difficulty.",
+                usage: "Collocations in Use 中 sheer 常修飾抽象名詞，強調「純粹、完全」之意。",
+                ex: "The runner's sheer determination carried her to the finish line.",
+                exZh: "這名跑者純粹的決心讓她衝過了終點線。"
+            }
+        ]
+    },
+    {
+        id: 5,
+        q: "Do you prefer to watch sports games alone or with a group of friends?",
+        sample: `<mark>It really depends on the occasion.</mark> For casual games, I honestly enjoy watching <span class="colloc">in the company of</span> friends — the <mark>lively banter</mark> and collective reactions make it so much more fun. But when it's a major final that I really care about, I sometimes prefer to watch <span class="colloc">in solitude</span> so I can <mark>fully absorb</mark> every moment without distraction. Both experiences have their own unique charm.`,
+        synonyms: [
+            {
+                word: "prefer", zh: "更喜歡",
+                tags: ["rather", "would sooner", "have a preference for", "tend to favour"],
+                example: "I tend to favour watching with friends for the social element.",
+                exampleZh: "我傾向於和朋友一起看，因為社交元素。"
+            },
+            {
+                word: "alone", zh: "獨自",
+                tags: ["in solitude", "by myself", "on my own", "without company"],
+                example: "Watching in solitude helps me focus on the tactics.",
+                exampleZh: "獨自觀看幫助我專注於戰術。"
+            },
+            {
+                word: "group of friends", zh: "一群朋友",
+                tags: ["close mates", "a crowd of people", "fellow fans", "a bunch of friends"],
+                example: "There's nothing like watching a final with a crowd of fellow fans.",
+                exampleZh: "和一群球迷一起看決賽的感覺是無可替代的。"
+            }
+        ],
+        phrases: [
+            {
+                word: "it really depends on",
+                pos: "expression",
+                zh: "這真的取決於...",
+                def: "Used to say that something varies according to the situation.",
+                usage: "在 IELTS 中用來給出有深度的回答，顯示你能從多角度思考。",
+                ex: "It really depends on the type of match — finals are better with friends.",
+                exZh: "這真的取決於比賽類型——決賽和朋友一起看更好。"
+            },
+            {
+                word: "lively banter",
+                pos: "noun phrase",
+                zh: "活潑的玩笑/鬥嘴",
+                def: "Playful and friendly teasing or joking between people.",
+                usage: "描述朋友間輕鬆幽默互動的地道英式說法。",
+                ex: "The lively banter between fans makes watching sports so entertaining.",
+                exZh: "球迷之間活潑的玩笑讓觀看運動變得非常有趣。"
+            },
+            {
+                word: "fully absorb",
+                pos: "verb phrase",
+                zh: "完全沉浸其中",
+                def: "To take in and experience something completely and deeply.",
+                usage: "表達全神貫注、深度體驗的說法，比 'focus on' 更有層次。",
+                ex: "I like to fully absorb the atmosphere when watching major events.",
+                exZh: "觀看重大賽事時，我喜歡完全沉浸其中。"
+            }
+        ]
+    },
+    {
+        id: 6,
+        q: "Have you ever watched a sports game in a stadium?",
+        sample: `Yes, I have, and it was <mark>an absolutely unforgettable experience</mark>. I went to a local football match a few years ago, and the <span class="colloc">electric atmosphere</span> blew me away. The <mark>deafening roar</mark> of the crowd when the home team scored was something I'll never forget. Seeing <span class="colloc">world-class players</span> perform right before your eyes gives you a <mark>completely different perspective</mark> compared to watching on TV.`,
+        synonyms: [
+            {
+                word: "watched in a stadium", zh: "在體育場觀看",
+                tags: ["attended in person", "watched live at a venue", "been to a match", "experienced first-hand"],
+                example: "I've attended several matches in person — it's incomparable to TV.",
+                exampleZh: "我現場觀看過幾場比賽——這是電視無法比擬的。"
+            },
+            {
+                word: "unforgettable", zh: "難忘的",
+                tags: ["memorable", "extraordinary", "remarkable", "once-in-a-lifetime"],
+                example: "It was a truly extraordinary event that I still talk about today.",
+                exampleZh: "這是一個真正非凡的事件，我至今仍在談論它。"
+            },
+            {
+                word: "stadium", zh: "體育場",
+                tags: ["arena", "sports ground", "venue", "pitch", "ground"],
+                example: "The venue held over 80,000 fans — the scale was breathtaking.",
+                exampleZh: "這個場館容納了超過八萬名球迷——規模令人嘆為觀止。"
+            }
+        ],
+        phrases: [
+            {
+                word: "an absolutely unforgettable experience",
+                pos: "noun phrase",
+                zh: "一段絕對難忘的體驗",
+                def: "An experience that is so special it cannot be forgotten.",
+                usage: "absolutely 是強調詞，Collocations in Use 中 absolutely 常與含有極端意義的詞搭配。",
+                ex: "Watching the final at the stadium was an absolutely unforgettable experience.",
+                exZh: "在體育場觀看決賽是一段絕對難忘的體驗。"
+            },
+            {
+                word: "deafening roar",
+                pos: "noun phrase",
+                zh: "震耳欲聾的吶喊聲",
+                def: "An extremely loud shout or noise made by a large crowd.",
+                usage: "deafening 是 Collocations in Use 中的強化形容詞，與 roar、noise 搭配。",
+                ex: "The deafening roar of 60,000 fans was overwhelming.",
+                exZh: "六萬名球迷震耳欲聾的吶喊聲令人不知所措。"
+            },
+            {
+                word: "completely different perspective",
+                pos: "noun phrase",
+                zh: "完全不同的視角/體驗",
+                def: "A very different way of seeing or experiencing something.",
+                usage: "用來對比現場觀看與電視觀看的差異，展示分析能力。",
+                ex: "Being there gives you a completely different perspective on the sport.",
+                exZh: "親身到場給你帶來對這項運動完全不同的視角。"
+            }
+        ]
+    }
+];
+
+let current = data[0];
+
+function makeBlanks(html) {
+    // Replace <mark>...</mark> → blank (yellow style)
+    html = html.replace(/<mark>(.*?)<\/mark>/g, (_, word) =>
+        `<span class="blank" data-word="${word.replace(/"/g,'&quot;')}" onclick="revealBlank(this)">${word}</span>`
+    );
+    // Replace <span class="colloc">...</span> → blank (green style)
+    html = html.replace(/<span class="colloc">(.*?)<\/span>/g, (_, word) =>
+        `<span class="blank colloc-blank" data-word="${word.replace(/"/g,'&quot;')}" onclick="revealBlank(this)">${word}</span>`
+    );
+    return html;
+}
+
+function showAnswer() {
+    document.getElementById('answerPlaceholder').style.display = 'none';
+    document.getElementById('answerArea').classList.remove('answer-hidden');
+    document.getElementById('btnShowAnswer').style.display = 'none';
+    document.getElementById('btnRevealBlanks').style.display = 'inline-block';
+}
+
+function revealBlank(el) {
+    el.classList.add('revealed');
+}
+
+function revealAllBlanks() {
+    document.querySelectorAll('.blank').forEach(b => b.classList.add('revealed'));
+    document.getElementById('btnRevealBlanks').textContent = '✓ All Revealed';
+    document.getElementById('btnRevealBlanks').disabled = true;
+}
+
+function render() {
+    // Q list
+    document.getElementById('qList').innerHTML = data.map(d => `
+        <div class="q-item ${d.id === current.id ? 'active' : ''}" onclick="select('${d.id}')">
+            <span class="q-num">${d.id}</span>
+            <span class="q-text">${d.q}</span>
+        </div>
+    `).join('');
+
+    // Reset answer state
+    document.getElementById('answerPlaceholder').style.display = '';
+    document.getElementById('answerArea').classList.add('answer-hidden');
+    document.getElementById('btnShowAnswer').style.display = 'inline-block';
+    document.getElementById('btnShowAnswer').textContent = 'Show Answer';
+    document.getElementById('btnRevealBlanks').style.display = 'none';
+    document.getElementById('btnRevealBlanks').textContent = '👁 Reveal All';
+    document.getElementById('btnRevealBlanks').disabled = false;
+
+    // Main
+    document.getElementById('currentQ').textContent = current.q;
+    document.getElementById('sampleAnswer').innerHTML = makeBlanks(current.sample);
+
+    // Synonyms
+    document.getElementById('synonyms').innerHTML = `
+        <div class="syn-note">💡 目的是幫你變化表達方式，用同義詞替換來豐富口語回答。</div>
+        ${current.synonyms.map(s => `
+            <div class="syn-group">
+                <div class="syn-keyword">
+                    <span class="syn-dot"></span>
+                    <span class="syn-word">${s.word}</span>
+                    <span class="syn-word-zh">${s.zh}</span>
+                </div>
+                <div class="syn-tags">${s.tags.map(t => `<span class="syn-tag">${t}</span>`).join('')}</div>
+                <div class="syn-example">
+                    "${s.example}"
+                    <em>${s.exampleZh}</em>
+                </div>
+            </div>
+        `).join('')}
+    `;
+
+    // Phrases
+    document.getElementById('phrases').innerHTML = current.phrases.map(p => `
+        <div class="phrase-card">
+            <div class="phrase-top">
+                <div class="phrase-word">${p.word}</div>
+                <span class="phrase-pos">${p.pos}</span>
+            </div>
+            <div class="phrase-zh">${p.zh}</div>
+            <div class="phrase-def">${p.def}</div>
+            <div class="phrase-usage">✅ ${p.usage}</div>
+            <div class="phrase-ex-label">Example</div>
+            <div class="phrase-ex">"${p.ex}"</div>
+            <div class="phrase-ex-zh">${p.exZh}</div>
+            <div class="phrase-actions">
+                <button class="action-btn" onclick="copy('${p.ex.replace(/'/g,"\\'")}')">📋 Copy</button>
+                <button class="action-btn">♡ Save</button>
+            </div>
+        </div>
+    `).join('');
+}
+
+function select(id) {
+    current = data.find(d => d.id === id);
+    render();
+}
+
+function switchTab(name) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+    event.target.classList.add('active');
+    document.getElementById(name).classList.add('active');
+}
+
+function copy(text) {
+    navigator.clipboard.writeText(text).catch(() => {});
+}
+
+render();
+</script>
+</body>
+</html>
